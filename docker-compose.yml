@@ -1,0 +1,36 @@
+version: '3'
+services:
+  php:
+    build:
+      context: ./Docker/Php
+    volumes:
+      - './:/var/www/html'
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - './var/www/html'
+      - './Docker/Nginx:/etc/nginx/conf.d'
+
+  pgsql:
+    image: postgres:13
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=commentDB
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - '/Docker/Volume/Pgsql:/var/lib/postgresql/data'
+
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+
+volumes:
+  db:
+    driver: local
