@@ -10,4 +10,6 @@ RUN apt install -y postgresql-client
 RUN docker-php-ext-install pgsql
 RUN docker-php-ext-install pdo_pgsql
 RUN docker-php-ext-install mysqli
+COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
+
 

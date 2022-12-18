@@ -1,12 +1,7 @@
 <?php
 
-require 'Database/Database.php';
+require 'Router.php';
 
-$connection = Database::openConnection('pgsql', 5432, 'commentDB');
+Router::get('/comments', 'CommentController@getComments');
 
-$sql = "SELECT * FROM comments";
-
-$data = pg_query($connection, $sql);
-
-$result = pg_fetch_all($data);
-echo json_encode($result);
+Router::post('/comment', 'CommentController@setComment');

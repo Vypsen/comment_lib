@@ -25,12 +25,3 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - '/Docker/Volume/Pgsql:/var/lib/postgresql/data'
-
-  mysql:
-    image: mysql:8
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret
-
-volumes:
-  db:
-    driver: local
