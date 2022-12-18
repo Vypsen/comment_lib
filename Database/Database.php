@@ -28,9 +28,14 @@ class Database
     function getData($sql)
     {
         $query = $this->getQuery($sql);
-        header('Content-type: application/json; charset=utf-8');
         $result = pg_fetch_all($query);
 
         return json_encode($result);
+    }
+
+    function setData($sql)
+    {
+        $query = $this->getQuery($sql);
+        return $query;
     }
 }
