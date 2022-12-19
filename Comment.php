@@ -16,11 +16,20 @@ class Comment
        self::$connection->openConnection();
     }
 
-    function create()
+    static function createModelFromRequest($body)
+    {
+        $comment = new self();
+        $comment->name = $body->name;
+        $comment->text = $body->text;
+
+        return $comment;
+    }
+
+    function createComment()
     {
         self::openConnection();
 
-        $query = "INSERT INTO  " . self::$tableName . '(name, text)' .
+        $query = "INSERT INTO  " . self::$tableName . '( name, text)' .
             " VALUES  ('{$this->name}', '{$this->text}')";
 
         $res = self::$connection->setData($query);
@@ -46,15 +55,11 @@ class Comment
 
         $data = json_decode(self::$connection->getData($query));
         if (!empty($data)){
-            $comment = new self();
-
+            $comment = self::createModelFromRequest($data[0]);
             $comment->id = $data[0]->id;
-            $comment->name = $data[0]->name;
-            $comment->text = $data[0]->text;
 
             return $comment;
-        };
-
+        }
         return false;
     }
 

@@ -4,6 +4,11 @@ require 'Comment.php';
 
 class CommentController
 {
+    private function validation_fail($body)
+    {
+        return (empty($body->name) || empty($body->text));
+    }
+
     function getComments()
     {
         $comments = Comment::getAll();
@@ -12,18 +17,16 @@ class CommentController
 
     function setComment($body)
     {
-        if (empty($body->name) || empty($body->text))
+        if ($this->validation_fail($body))
         {
             http_response_code(400);
             return json_encode(array("message" => "Неполные данные."),JSON_UNESCAPED_UNICODE);
         }
 
-        $comment = new Comment();
-        $comment->name = $body->name;
-        $comment->text = $body->text;
+        $comment = Comment::createModelFromRequest($body);
 
         try {
-            $comment->create();
+            $comment->createComment();
         } catch (Exception $e){
             return $e;
         }
@@ -32,6 +35,12 @@ class CommentController
 
     function updateComment($body)
     {
+        if ($this->validation_fail($body))
+        {
+            http_response_code(400);
+            return json_encode(array("message" => "Неполные данные."),JSON_UNESCAPED_UNICODE);
+        }
+
         $oldComment = Comment::get($body->id);
         if ($oldComment) {
             http_response_code(200);
@@ -39,10 +48,12 @@ class CommentController
             $oldComment->text = $body->text;
 
             $oldComment->update();
-
         } else {
+            $comment = Comment::createModelFromRequest($body);
+            $comment->createComment();
+
             http_response_code(201);
-            $this->setComment($body);
+            return json_encode(array("message" => "Комментарий успешно добавлен."),JSON_UNESCAPED_UNICODE);
         }
     }
 }
