@@ -1,23 +1,19 @@
 <?php
 
-require 'Comment.php';
+require_once('Models/Comment.php');
+require_once('Rules/Rules.php');
 
 class CommentController
 {
-    private function validation_fail($body)
-    {
-        return (empty($body->name) || empty($body->text));
-    }
-
-    function getComments()
+    public function getComments()
     {
         $comments = Comment::getAll();
         return $comments;
     }
 
-    function setComment($body)
+    public function setComment($body)
     {
-        if ($this->validation_fail($body))
+        if (Rules::validation_fail($body))
         {
             http_response_code(400);
             return json_encode(array("message" => "Неполные данные."),JSON_UNESCAPED_UNICODE);
@@ -30,12 +26,13 @@ class CommentController
         } catch (Exception $e){
             return $e;
         }
+        http_response_code(200);
         return json_encode(array("message" => "Комментарий успешно добавлен."),JSON_UNESCAPED_UNICODE);
     }
 
-    function updateComment($body)
+    public function updateComment($body)
     {
-        if ($this->validation_fail($body))
+        if (Rules::validation_fail($body))
         {
             http_response_code(400);
             return json_encode(array("message" => "Неполные данные."),JSON_UNESCAPED_UNICODE);

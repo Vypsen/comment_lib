@@ -1,19 +1,25 @@
 <?php
-require 'Database/Database.php';
+
+require_once('Database/Database.php');
 
 class Comment
 {
-    static private Database $connection;
+    static public Database $db;
     static private $tableName = "comments";
 
     public $id;
     public $name;
     public $text;
 
-    private static function openConnection()
+    public function __construct()
     {
-       self::$connection = new Database('pgsql', 5432, 'commentDB');
-       self::$connection->openConnection();
+        self::openConnection();
+    }
+
+    static public function openConnection()
+    {
+        self::$db = new Database();
+        return true;
     }
 
     static function createModelFromRequest($body)
@@ -25,14 +31,13 @@ class Comment
         return $comment;
     }
 
-    function createComment()
+    public function createComment()
     {
-        self::openConnection();
 
         $query = "INSERT INTO  " . self::$tableName . '( name, text)' .
             " VALUES  ('{$this->name}', '{$this->text}')";
 
-        $res = self::$connection->setData($query);
+        $res = self::$db->setData($query);
 
         return $res;
     }
@@ -42,7 +47,7 @@ class Comment
         self::openConnection();
 
         $query = "SELECT * FROM " . self::$tableName;
-        $data = self::$connection->getData($query);
+        $data = self::$db->getData($query);
 
         return $data;
     }
@@ -53,8 +58,8 @@ class Comment
 
         $query = "SELECT * FROM " . self::$tableName . " WHERE id = {$id}";
 
-        $data = json_decode(self::$connection->getData($query));
-        if (!empty($data)){
+        $data = json_decode(self::$db->getData($query));
+        if (!empty($data)) {
             $comment = self::createModelFromRequest($data[0]);
             $comment->id = $data[0]->id;
 
@@ -68,14 +73,14 @@ class Comment
         self::openConnection();
         $query = "DELETE FROM " . self::$tableName . " WHERE id = {$id}";
 
-        return self::$connection->setData($query);
+        return self::$db->setData($query);
     }
 
-    function update()
+    public function update()
     {
         $query = "UPDATE " . self::$tableName .
-            " SET name = '{$this->name}', text = '{$this->text}' WHERE id = {$this->id}" ;
+            " SET name = '{$this->name}', text = '{$this->text}' WHERE id = {$this->id}";
 
-        self::$connection->setData($query);
+        self::$db->setData($query);
     }
 }

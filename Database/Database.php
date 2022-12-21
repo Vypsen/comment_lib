@@ -4,23 +4,32 @@ class Database
 {
     private $connection;
     private $host, $port, $db, $user, $password;
-    public function __construct($host = 'localhost', $port = 5432, $db = 'db', $user = 'user', $password = 'secret')
+    public function __construct()
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->db = $db;
-        $this->user = $user;
-        $this->password = $password;
+        $this->host = 'pgsql';
+        $this->port = 5432;
+        $this->db = 'commentDB';
+        $this->user = 'user';
+        $this->password = 'secret';
+
+        try {
+            $this->connection = pg_connect("host={$this->host} port={$this->port} dbname={$this->db} user={$this->user} password={$this->password}");
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
-    function openConnection()
+    /**
+     * @return false|PgSql\Connection
+     */
+    public function connection(): \PgSql\Connection|bool
     {
-        $this->connection = pg_connect("host={$this->host} port={$this->port} dbname={$this->db} user={$this->user} password={$this->password}");
+        return $this->connection;
     }
 
     private function getQuery($sql)
     {
-        $query = pg_query($this->connection, $sql);
+        $query = pg_query($this->connection(), $sql);
 
         return $query;
     }
