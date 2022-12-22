@@ -19,9 +19,9 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: '${DB_USERNAME}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
-      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'secret'
+      POSTGRES_DB: 'commentDB'
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - '/Docker/Volume/Pgsql:/var/lib/postgresql/data'
