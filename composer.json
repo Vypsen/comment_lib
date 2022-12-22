@@ -1,6 +1,7 @@
 {
   "name": "vypsen/comment-lib",
   "description": "test comment lib for farpost",
+  "license": "proprietary",
   "authors": [
     {
       "name": "vypsen",
