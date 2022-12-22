@@ -46,5 +46,6 @@ class Router
         $method = explode('@', $move)[1];
         $objectController = new $controller;
         echo $objectController->$method($body);
+        die;
     }
 }
