@@ -13,7 +13,8 @@
   },
   "require": {
     "php": "^8.1",
-    "ext-pgsql": "*"
+    "ext-pgsql": "*",
+    "phpunit/phpunit": "^9"
   },
   "autoload": {
     "psr-4": {
